@@ -7,9 +7,23 @@
 #ifndef LIBLCD1602_LCD_H
 #define LIBLCD1602_LCD_H
 
-
 #include <cstdint>
-//#include "pigpio.h"
+#include <string>
+#include <map>
+
+
+/**
+ * @brief Result Codes for LCD specific stuff.
+ */
+typedef enum {
+
+    LCD_RESULT_SUCCES = 0,
+    LCD_RESULT_ERROR_UNKNOWN = -1,
+    LCD_RESULT_ERROR_DANGEROUS = -2,
+    LCD_RESULT_ERROR_LINE_OUT_OF_BOUNDS=-3,
+    GPIO_ERROR=-4
+} LCDResult_t;
+
 
 /**
  *  Models the lcd.
@@ -18,26 +32,37 @@
  */
 class LCD {
 public:
-    LCD(const uint8_t &pinRegisterSelect, const uint8_t &pinDataBit4, const uint8_t &pinDataBit5,
-        const uint8_t &pinDataBit6, const uint8_t &pinDataBit7);
+    enum LCDLines {
+        LCD_LINE_1 = 0x80,
+        LCD_LINE_2 = 0xC0
+    };
+    enum LCDModes {
+        LCD_COMMAND_MODE = 0,
+        LCD_CHARACTER_MODE = 1
+    };
 
-    void initialiseLCD();
+    LCD(const int &pinRegisterSelect, const int& pinEnable,const int &pinDataBit4, const int &pinDataBit5,
+        const int &pinDataBit6, const int &pinDataBit7);
 
-    void writeToLCD();
+    LCDResult_t initialiseLCD();
+
+    LCDResult_t writeLCD(const uint8_t& byte,LCDModes lcdmode);
+
+    LCDResult_t setText(const std::string &text, LCDLines line);
+
+    void toggleEnablePin() const;
 
 private:
     // PIN DEFINITIONS
-    const uint8_t PIN_REGISTER_SELECT;
-    const uint8_t PIN_DATA_BIT_4;
-    const uint8_t PIN_DATA_BIT_5;
-    const uint8_t PIN_DATA_BIT_6;
-    const uint8_t PIN_DATA_BIT_7;
+    const int PIN_REGISTER_SELECT;
+    const int PIN_DATA_BIT_4;
+    const int PIN_DATA_BIT_5;
+    const int PIN_DATA_BIT_6;
+    const int PIN_DATA_BIT_7;
+    const int PIN_ENABLE;
     //DEVICE CONSTANTS
-    static const uint8_t LCD_CHARACTER_MODE = 1;
-    static const uint8_t LCD_COMMAND_MODE = 0;
-    static const uint8_t LCD_CHARS_PER_LINE =16;
-    static const uint8_t LCD_LINE_1=0x80;
-    static const uint8_t LCD_LINE_2=0xC0;
+    static const int LCD_CHARS_PER_LINE = 16;
+
 
 };
 
