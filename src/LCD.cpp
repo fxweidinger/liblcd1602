@@ -35,17 +35,20 @@ LCDResult_t LCD::initialiseLCD() {
     writeLCD(0x0C, LCD_COMMAND_MODE);
     writeLCD(0x28, LCD_COMMAND_MODE);
     writeLCD(0x01, LCD_COMMAND_MODE);
-    time_sleep(0.0005);
+    time_sleep(0.005);
     return LCD_RESULT_SUCCES;
 }
 
-LCDResult_t LCD::writeLCD(const uint8_t &byte, LCD::LCDModes lcdmode) {
+
+
+LCDResult_t LCD::writeLCD(uint8_t byte, LCD::LCDModes lcdmode) {
     gpioWrite(PIN_REGISTER_SELECT, lcdmode);
 
     gpioWrite(PIN_DATA_BIT_4, 0);
     gpioWrite(PIN_DATA_BIT_5, 0);
     gpioWrite(PIN_DATA_BIT_6, 0);
     gpioWrite(PIN_DATA_BIT_7, 0);
+
     if ((byte & 0x10) == 0x10)
         gpioWrite(PIN_DATA_BIT_4, 1);
     if ((byte & 0x20) == 0x20)
@@ -62,6 +65,7 @@ LCDResult_t LCD::writeLCD(const uint8_t &byte, LCD::LCDModes lcdmode) {
     gpioWrite(PIN_DATA_BIT_6, 0);
     gpioWrite(PIN_DATA_BIT_7, 0);
 
+
     if ((byte & 0x01) == 0x01)
         gpioWrite(PIN_DATA_BIT_4, 1);
     if ((byte & 0x02) == 0x02)
@@ -74,20 +78,20 @@ LCDResult_t LCD::writeLCD(const uint8_t &byte, LCD::LCDModes lcdmode) {
     return LCD_RESULT_SUCCES;
 }
 
-void LCD::toggleEnablePin() const {
-    time_sleep(0.0005);
+void LCD::toggleEnablePin() {
+    time_sleep(0.005);
     gpioWrite(PIN_ENABLE, 1);
-    time_sleep(0.0005);
-    gpioWrite(PIN_ENABLE, 1);
-    time_sleep(0.0005);
+    time_sleep(0.005);
+    gpioWrite(PIN_ENABLE, 0);
+    time_sleep(0.005);
 }
 
 LCDResult_t LCD::setText(const std::string &text, LCD::LCDLines line) {
 
-    writeLCD(line, LCD_COMMAND_MODE);
+    writeLCD(line, LCD::LCD_COMMAND_MODE);
 
-    for (char i : text) {
-        writeLCD(i, LCD_CHARACTER_MODE);
+    for (uint8_t i : text) {
+        writeLCD(i, LCD::LCD_CHARACTER_MODE);
     }
     return LCD_RESULT_SUCCES;
 }

@@ -46,11 +46,11 @@ public:
 
     LCDResult_t initialiseLCD();
 
-    LCDResult_t writeLCD(const uint8_t& byte,LCDModes lcdmode);
+    LCDResult_t writeLCD(uint8_t byte,LCDModes lcdmode);
 
     LCDResult_t setText(const std::string &text, LCDLines line);
 
-    void toggleEnablePin() const;
+    void toggleEnablePin();
 
 private:
     // PIN DEFINITIONS
